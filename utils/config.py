@@ -44,7 +44,7 @@ DATASET_FORMATS = {
         "qrels_columns": {'qid': 'query_id', 'docno': 'doc_id', 'label': 'relevance'},
         "run_columns": {'qid': 'query_id', 'docno': 'doc_id', 'docScore': 'score'},
         "doc_id_transform": lambda x: str(x).strip(),
-        # Español: umbral binario en >=1 y ganancias graduadas 0..3
+        # Binary threshold at >=1 and graduated gains 0..3
         "relevance_levels": {0: "Non-relevant", 1: "Relevant", 2: "Highly relevant", 3: "Perfect"},
         "binary_threshold": 1,
         "gain_values": {0: 0, 1: 1, 2: 2, 3: 3}
@@ -54,14 +54,14 @@ DATASET_FORMATS = {
         "qrels_columns": {'qid': 'query_id', 'docno': 'doc_id', 'label': 'relevance'},
         "run_columns": {'qid': 'query_id', 'docno': 'doc_id', 'docScore': 'score'},
         "doc_id_transform": lambda x: str(x).strip(),
-        # Español: umbral binario >=1 y ganancias 0..2; -1 y 0 mapean a 0
+        # Binary threshold >=1 and gains 0..2; -1 and 0 map to 0
         "relevance_levels": {-1: "Not assessed/negative", 0: "Non-relevant", 1: "Relevant", 2: "Highly relevant"},
         "binary_threshold": 1,
         "gain_values": {-1: 0, 0: 0, 1: 1, 2: 2}
     },
     "msmarco_dl20_judged": {
         # MSMARCO passage TREC-DL 2020 judged (0..3): 0=Irrelevant, 1=Related, 2=Highly, 3=Perfect
-        # Español: Para métricas binarias, el umbral oficial suele ser >=2 (RR rel=2)
+        # For binary metrics, the official threshold is usually >=2 (RR rel=2)
         "qrels_columns": {'qid': 'query_id', 'docno': 'doc_id', 'label': 'relevance'},
         "run_columns": {'qid': 'query_id', 'docno': 'doc_id', 'docScore': 'score'},
         "doc_id_transform": lambda x: str(x).strip(),
@@ -70,8 +70,8 @@ DATASET_FORMATS = {
         "gain_values": {0: 0, 1: 1, 2: 2, 3: 3}
     },
     "car_v15_train_fold0": {
-        # TREC CAR v1.5 train fold 0: qrels solo con nivel 1 (presencia bajo el encabezado)
-        # Español: tratamos como binario (>=1 relevante) y ganancias {0,1}
+        # TREC CAR v1.5 train fold 0: qrels only with level 1 (presence under heading)
+        # We treat as binary (>=1 relevant) and gains {0,1}
         "qrels_columns": {'qid': 'query_id', 'docno': 'doc_id', 'label': 'relevance'},
         "run_columns": {'qid': 'query_id', 'docno': 'doc_id', 'docScore': 'score'},
         "doc_id_transform": lambda x: str(x).strip(),
@@ -81,8 +81,8 @@ DATASET_FORMATS = {
         "gain_values": {0: 0, 1: 1}
     },
     "car_v15_trec_y1_manual": {
-        # TREC CAR v1.5 Y1 manual: qrels en {-2,-1,0,1,2,3}
-        # Español: para binario usamos >=1 como relevante; ganancias graduadas 0..3
+        # TREC CAR v1.5 Y1 manual: qrels in {-2,-1,0,1,2,3}
+        # For binary, we use >=1 as relevant; graduated gains 0..3
         "qrels_columns": {'qid': 'query_id', 'docno': 'doc_id', 'label': 'relevance'},
         "run_columns": {'qid': 'query_id', 'docno': 'doc_id', 'docScore': 'score'},
         "doc_id_transform": lambda x: str(x).strip(),

@@ -21,7 +21,7 @@ class TestStatsCollector:
         os.makedirs(output_dir, exist_ok=True)
     
     def add_test_case(self, test_class: str, test_case: str, passed: bool, execution_time: float, details: Dict[str, Any] = None):
-        # Buscar si la clase ya está en 'detalles_por_clase'
+        # Check if the class is already in 'detalles_por_clase'
         class_stat = next((c for c in self.stats["detalles_por_clase"] if c["test_name"] == test_class), None)
         if not class_stat:
             class_stat = {
@@ -34,7 +34,7 @@ class TestStatsCollector:
             }
             self.stats["detalles_por_clase"].append(class_stat)
         
-        # Agregar el caso de prueba
+        # Add the test case
         class_stat["test_cases"].append({
             "name": test_case,
             "passed": passed,
