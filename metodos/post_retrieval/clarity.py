@@ -44,9 +44,9 @@ class Clarity(PostRetrievalMethod):
         self.dataset_name = dataset_name
 
         # Dirichlet smoothing configuration for background model P(w|C)
-        # En colecciones pequeñas (p. ej., Cranfield), muchos términos raros o no vistos
-        # producen probabilidades cercanas a 0. La suavización de Dirichlet evita ceros y
-        # estabiliza la divergencia KL.
+        # In small collections (e.g., Cranfield), many rare or unseen terms
+        # produce probabilities close to 0. Dirichlet smoothing avoids zeros and
+        # stabilizes the KL divergence.
         self.mu_bg = float(mu_bg)
         vocab_size = len(index_builder.term_df) if getattr(index_builder, 'term_df', None) else 0
         # Evitar división por cero si el vocabulario no está disponible
@@ -159,11 +159,11 @@ class Clarity(PostRetrievalMethod):
         return dict(sorted_terms)
 
     def _get_collection_probabilities(self, terms: Iterable[str]) -> Dict[str, float]:
-        """Calcula P(w|C) con suavización de Dirichlet.
+        """Calculate P(w|C) with Dirichlet smoothing.
 
-        Español: Aplicamos Dirichlet al modelo de fondo para reducir varianza en
-        colecciones pequeñas y evitar probabilidades cero en términos no vistos.
-        Fórmula: (cf + mu * p0) / (total_terms + mu), con p0 uniforme.
+        We apply Dirichlet to the background model to reduce variance in
+        small collections and avoid zero probabilities for unseen terms.
+        Formula: (cf + mu * p0) / (total_terms + mu), with uniform p0.
         """
         total_terms = max(1, self.index_stats['total_terms'])
         mu = self.mu_bg
