@@ -154,7 +154,7 @@ def process_dataset(dataset_name: str, dataset_path: str, args) -> QPPCorrelatio
                             (m.startswith('ndcg@') or m == 'ap')]
         evaluation_metrics.extend(additional_metrics)
     
-    # Asegurar que las métricas para dificultad estén incluidas si son compatibles
+    # Ensure difficulty metrics are included if they are supported
     difficulty_metrics = getattr(args, "difficulty_metric", None)
     valid_difficulty_metrics = []
     if difficulty_metrics:
@@ -165,7 +165,7 @@ def process_dataset(dataset_name: str, dataset_path: str, args) -> QPPCorrelatio
                     evaluation_metrics.append(m)
             else:
                 print(f"WARNING: difficulty metric '{m}' is not supported. "
-                      "Use 'ap' o 'ndcg@k'. Ignorando esta métrica.")
+                      "Use 'ap' or 'ndcg@k'. Ignoring this metric.")
         if not valid_difficulty_metrics:
             difficulty_metrics = None
         else:
@@ -194,7 +194,7 @@ def process_dataset(dataset_name: str, dataset_path: str, args) -> QPPCorrelatio
     if 'text' not in retrieval_results.columns:
         print("WARNING: 'text' field missing from retrieval results!")
     
-    # Análisis adicional de qrels y dificultad de consulta
+    # Additional analysis of qrels and query difficulty
     if not args.skip_plots:
         qrels_output_dir = os.path.join(
             script_dir, "evaluation_results", dataset_name
@@ -262,7 +262,7 @@ def main():
                        help='Correlation coefficients to compute (default: kendall)')
     
     # Analysis options
-    # Español: UEF se habilita por defecto; el flag se mantiene por compatibilidad.
+    # UEF is enabled by default; the flag is kept for compatibility.
     parser.add_argument('--use-uef', action='store_true', default=True,
                        help='Enable UEF-based QPP methods (enabled by default)')
     parser.add_argument('--skip-plots', action='store_true',
