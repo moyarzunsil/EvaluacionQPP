@@ -1,84 +1,98 @@
-# EvaluacionQPP - Evaluación de Métodos de Predicción de Rendimiento de Consultas
+# EvaluacionQPP - Evaluation of Query Performance Prediction Methods
 
-## Descripción
-Este proyecto implementa y evalúa diferentes métodos de Predicción de Rendimiento de Consultas (QPP) sobre colecciones de documentos. Los métodos QPP intentan predecir qué tan bien funcionará una consulta antes de ejecutarla.
+## Description
+This project implements and evaluates various Query Performance Prediction (QPP) methods on document collections. QPP methods attempt to predict how well a query will perform before executing it.
 
-## Características Principales
-- ✨Implementación de métodos QPP pre y post-recuperación
-- 📚Soporte para múltiples datasets (ANTIQUE, Iquique)
-- 📊Análisis de correlación con métricas de evaluación (nDCG, AP)
-- 📈Generación de gráficos y reportes de resultados
-- ⚙️Procesamiento configurable de consultas y documentos
+## Key Features
+- ✨ Implementation of pre-retrieval and post-retrieval QPP methods
+- 📚 Support for multiple datasets (e.g., ANTIQUE, a local dataset [ANONYMIZED])
+- 📊 Correlation analysis with evaluation metrics (e.g., nDCG, AP)
+- 📈 Generation of charts and result reports
+- ⚙️ Configurable processing of queries and documents
 
-## Métodos QPP Implementados
-### Pre-recuperación:
-- IDF promedio y máximo
-- SCQ promedio y máximo
+## Implemented QPP Methods
+### Pre-retrieval:
+- Average and maximum IDF
+- Average and maximum SCQ
 - Clarity Score
 
-### Post-recuperación:
+### Post-retrieval:
 - WIG (Weighted Information Gain)
 - NQC (Normalized Query Commitment)
 - UEF (Utility Estimation Framework)
 
-## Requisitos
+## Requirements
 - Python 3.9+
 - Java 11+
-- Dependencias listadas en requirements.txt
+- Dependencies listed in `requirements.txt`
 
-## Instalación
-1. Clonar el repositorio
-2. Instalar Java 11
-3. Crear entorno virtual: python -m venv qppenv
-4. Activar entorno virtual:
-   - Windows: qppenv\Scripts\activate
-   - Unix/MacOS: source qppenv/bin/activate
-5. Instalar dependencias: pip install -r requirements.txt
+## Installation
+1. Clone the repository
+2. Install Java 11
+3. Create a virtual environment:
+   ```bash
+   python -m venv qppenv
+   ```
+4. Activate the virtual environment:
+   - **Windows**:
+     ```cmd
+     qppenv\Scripts\activate
+     ```
+   - **Unix/MacOS**:
+     ```bash
+     source qppenv/bin/activate
+     ```
+5. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
 
 ## Datasets
-La mayoría de los datasets provienen de [ir-datasets](https://ir-datasets.com/) (identificadores con prefijo `irds:` en `utils/config.py`) y se descargan automáticamente en la primera ejecución vía PyTerrier/ir_datasets. La descarga puede tardar dependiendo del tamaño del corpus (ej. TREC-COVID, MSMARCO v2 son grandes). El dataset `iquique_small` es local al proyecto.
+Most datasets are retrieved from [ir-datasets](https://ir-datasets.com/) (identifiers prefixed with `irds:` in `utils/config.py`) and are automatically downloaded on the first run via PyTerrier/ir_datasets. The download time may vary depending on the size of the corpus (e.g., TREC-COVID and MSMARCO v2 are large). The local dataset `[ANONYMIZED]_small` is stored locally within the project.
 
-## Uso
-Todos los comandos se ejecutan desde el directorio `EvaluacionQPP/` (donde está `main.py`).
+## Usage
+All commands must be executed from the `EvaluacionQPP/` directory (where `main.py` is located).
 
-### Ejecutar evaluación sobre un dataset específico
-```
+### Run evaluation on a specific dataset
+```bash
 python main.py --datasets cranfield
 ```
-Reemplazar `cranfield` por cualquiera disponible en `utils/config.py` (`AVAILABLE_DATASETS`): `antique_test`, `iquique_small`, `cranfield`, `trec_covid`, `msmarco_dl20_judged`, `car_v15_trec_y1_manual`.
+Replace `cranfield` with any available dataset defined in `utils/config.py` (`AVAILABLE_DATASETS`): `antique_test`, `[ANONYMIZED]_small`, `cranfield`, `trec_covid`, `msmarco_dl20_judged`, `car_v15_trec_y1_manual`.
 
-### Ejecutar evaluación sobre todos los datasets
-```
+### Run evaluation on all datasets
+```bash
 python main.py
 ```
-Omitir `--datasets` procesa todos los datasets definidos en `AVAILABLE_DATASETS`.
+Omitting the `--datasets` flag processes all datasets defined in `AVAILABLE_DATASETS`.
 
-### Opciones principales:
-| Opción | Descripción |
+### Main Options:
+| Option | Description |
 |--------|-------------|
-| `--datasets` | Datasets a evaluar (separados por espacios) |
-| `--max-queries` | Número máximo de consultas a procesar |
-| `--list-size` | Tamaño de lista para métricas de ranking |
-| `--metrics` | Métricas de evaluación a utilizar |
-| `--correlations` | Coeficientes de correlación a calcular |
-| `--output-dir` | Directorio para guardar resultados |
-| `--use-uef` | Incluir método UEF en evaluación |
-| `--skip-plots` | Omitir generación de gráficos |
+| `--datasets` | Datasets to evaluate (space-separated) |
+| `--max-queries` | Maximum number of queries to process |
+| `--list-size` | List size for ranking metrics |
+| `--metrics` | Evaluation metrics to use |
+| `--correlations` | Correlation coefficients to calculate |
+| `--output-dir` | Directory to save results |
+| `--use-uef` | Include UEF method in evaluation |
+| `--skip-plots` | Skip chart generation |
 
-## Estructura del Proyecto
+## Project Structure
+```text
 /EvaluacionQPP
-  /data - Gestión de datasets
-  /indexing - Construcción de índices
-  /metodos - Implementación de métodos QPP
-  /retrieval - Funciones de recuperación
-  /utils - Utilidades generales
-  /correlation_analysis - Análisis de resultados
+  /data - Dataset management
+  /indexing - Index building
+  /metodos - QPP methods implementation
+  /retrieval - Retrieval functions
+  /utils - General utilities
+  /correlation_analysis - Results analysis
+```
 
-## Contribuciones
-Las contribuciones son bienvenidas. Por favor, seguir las guías de estilo:
-- Usar snake_case para variables y funciones
-- Usar camelCase para clases
-- Usar ALL_CAPS para constantes
-- Seguir principios OOP
-- Mantener código modular y reutilizable
-- Incluir documentación y comentarios
+## Contributions
+Contributions are welcome. Please follow these style guidelines:
+- Use `snake_case` for variables and functions
+- Use `camelCase` for classes
+- Use `ALL_CAPS` for constants
+- Follow OOP principles
+- Keep code modular and reusable
+- Include documentation and comments
