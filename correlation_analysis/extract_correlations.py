@@ -14,10 +14,10 @@ DATASETS = [
 ]
 
 METHODS = [
-    "IDF Promedio",
-    "IDF Máximo",
-    "SCQ Promedio",
-    "SCQ Máximo",
+    "IDF Average",
+    "IDF Maximum",
+    "SCQ Average",
+    "SCQ Maximum",
     "WIG",
     "NQC",
     "Clarity",
@@ -30,39 +30,39 @@ COR_TYPES = ["KENDALL", "SPEARMAN", "PEARSON"]
 
 
 def parse_dataset(dataset: str):
-    """Parse a single informe_correlacion_qpp.txt and extract ndcg@10 values."""
-    path = BASE / dataset / "informe_correlacion_qpp.txt"
+    """Parse a single qpp_correlation_report.txt and extract ndcg@10 values."""
+    path = BASE / dataset / "qpp_correlation_report.txt"
     text = path.read_text(encoding="utf-8")
 
     result = {m: {} for m in METHODS}
 
     for cor in COR_TYPES:
         m = re.search(
-            rf"Correlaciones {cor}:(.*?)(?:\nCorrelaciones |\Z)",
+            rf"Correlations {cor}:(.*?)(?:\nCorrelations |\Z)",
             text,
             flags=re.DOTALL,
         )
         if not m:
-            raise RuntimeError(f"No se encontró la sección para {cor} en {dataset}")
+            raise RuntimeError(f"Could not find section for {cor} in {dataset}")
         block = m.group(1)
 
         m_table = re.search(
-            r"Valores de correlaci[óo]n[^\n]*\n(.*?)(?:\n\n|Estadísticas Resumen)",
+            r"Correlation values[^\n]*\n(.*?)(?:\n\n|Summary Statistics)",
             block,
             flags=re.DOTALL,
         )
         if not m_table:
-            raise RuntimeError(f"No se encontró la tabla de valores en {dataset} / {cor}")
+            raise RuntimeError(f"Could not find values table in {dataset} / {cor}")
 
         table = m_table.group(1)
         lines = [ln.strip() for ln in table.splitlines() if ln.strip()]
         if not lines:
             continue
 
-        # Primera línea: encabezado "ndcg@10 ap"
+        # First line: header "ndcg@10 ap"
         for line in lines[1:]:
-            # Ejemplo de línea:
-            # "IDF Promedio  0.096422  0.096616"
+            # Example line:
+            # "IDF Average  0.096422  0.096616"
             m_row = re.match(
                 r"(?P<method>[A-Za-zÁÉÍÓÚÜÑáéíóúüñ\- ]+?)\s+"
                 r"(?P<ndcg>[+-]?\d+\.\d+)\s+"
@@ -82,14 +82,14 @@ def parse_dataset(dataset: str):
 def main():
     data = {ds: parse_dataset(ds) for ds in DATASETS}
 
-    # Imprime JSON para depuración (solo ASCII para evitar problemas de encoding)
-    print("# JSON bruto de correlaciones (ndcg@10):", flush=True)
+    # Print raw JSON for debugging (ASCII only to avoid encoding issues)
+    print("# Raw correlations JSON (ndcg@10):", flush=True)
     print(json.dumps(data, indent=2, ensure_ascii=True), flush=True)
 
-    # También genera filas de Typst listas para pegar en la tabla
-    print("\n# Filas Typst sugeridas (ndcg@10, P-rho / S-rho / K-tau):\n", flush=True)
+    # Also generates Typst rows ready to paste into the table
+    print("\n# Suggested Typst rows (ndcg@10, P-rho / S-rho / K-tau):\n", flush=True)
 
-    # Orden lógico para las columnas de correlación en la tabla
+    # Logical order for correlation columns in the table
     cor_order = ["PEARSON", "SPEARMAN", "KENDALL"]
 
     for method in METHODS:

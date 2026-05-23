@@ -22,10 +22,10 @@ plt.rcParams.update({
 })
 
 METHOD_NAME_MAP = {
-    'idf_avg': 'IDF Promedio',
-    'idf_max': 'IDF Máximo',
-    'scq_avg': 'SCQ Promedio',
-    'scq_max': 'SCQ Máximo',
+    'idf_avg': 'IDF Average',
+    'idf_max': 'IDF Maximum',
+    'scq_avg': 'SCQ Average',
+    'scq_max': 'SCQ Maximum',
     'wig': 'WIG',
     'nqc': 'NQC',
     'clarity': 'Clarity',
@@ -186,10 +186,10 @@ class QPPCorrelationAnalyzer:
         # Create significance categories
         significance_bins = [1, 0.05, 0.01, 0.001, 0]
         significance_labels = [
-            'No significativo (≥0.05)',
-            'Significativo (<0.05)',
-            'Muy significativo (<0.01)',
-            'Altamente significativo (<0.001)'
+            'Not significant (≥0.05)',
+            'Significant (<0.05)',
+            'Very significant (<0.01)',
+            'Highly significant (<0.001)'
         ]
         
         # Create annotated matrix with stars and categories
@@ -239,17 +239,17 @@ class QPPCorrelationAnalyzer:
         )
         cbar.ax.set_yticklabels(significance_labels)
         cbar.ax.tick_params(labelsize=11)
-        cbar.ax.set_title('N. de significancia', fontsize=12)
+        cbar.ax.set_title('Significance level', fontsize=12)
         
         # Add significance threshold line
         plt.axhline(y=0, color='white', linewidth=3, xmin=0, xmax=1)
         
         # Formatting
-        plt.title(f'Significancia Estadística - {correlation_type.capitalize()}\n', fontsize=16, pad=20)
+        plt.title(f'Statistical Significance - {correlation_type.capitalize()}\n', fontsize=16, pad=20)
         plt.xticks(rotation=45, ha='right', fontsize=12)
         plt.yticks(fontsize=12)
-        plt.xlabel('Métricas de Recuperación', fontsize=14)
-        plt.ylabel('Métodos QPP', fontsize=14)
+        plt.xlabel('Retrieval Metrics', fontsize=14)
+        plt.ylabel('QPP Methods', fontsize=14)
         plt.tight_layout()
         
         # Save/show plot
@@ -296,7 +296,7 @@ class QPPCorrelationAnalyzer:
             square=True,
             mask=mask
         )
-        plt.title(f'Correlación de {correlation_type.capitalize()} entre Métodos QPP y Métricas', pad=20)
+        plt.title(f'{correlation_type.capitalize()} Correlation between QPP Methods and Metrics', pad=20)
         plt.xticks(rotation=45, ha='right')
         plt.tight_layout()
         
@@ -345,14 +345,14 @@ class QPPCorrelationAnalyzer:
         plt.yticks(rotation=0, fontsize=12, va='center')
         
         # Adjust title and labels for horizontal layout
-        ax.set_title(f'Correlaciones {correlation_type.capitalize()} - Métodos QPP vs Métricas\n', 
+        ax.set_title(f'{correlation_type.capitalize()} Correlations - QPP Methods vs Metrics\n', 
                    fontsize=14, pad=20)
-        ax.set_xlabel('Métodos QPP', fontsize=12)
-        ax.set_ylabel('Métricas de Recuperación', fontsize=12)
+        ax.set_xlabel('QPP Methods', fontsize=12)
+        ax.set_ylabel('Retrieval Metrics', fontsize=12)
         
         # Move colorbar to bottom
         cbar = ax.collections[0].colorbar
-        cbar.ax.set_ylabel(f'Correlación {correlation_type}', rotation=-90, va="bottom", labelpad=15)
+        cbar.ax.set_ylabel(f'{correlation_type.capitalize()} Correlation', rotation=-90, va="bottom", labelpad=15)
         cbar.ax.tick_params(labelsize=10)
         
         plt.tight_layout()
@@ -397,8 +397,8 @@ class QPPCorrelationAnalyzer:
             corr, _ = stats.kendalltau(self.qpp_df[qpp_method], self.metrics_df[metric])
             method_name = METHOD_NAME_MAP.get(qpp_method, qpp_method)
             ax.set_title(f'{method_name}\nτ = {corr:.4f}', fontsize=14, pad=10)
-            ax.set_xlabel('Puntuación QPP')
-            ax.set_ylabel(f'Puntuación {metric_label}')
+            ax.set_xlabel('QPP Score')
+            ax.set_ylabel(f'{metric_label} Score')
             
         # Remove empty subplots
         for idx in range(n_methods, len(axes.flat)):
@@ -433,8 +433,8 @@ class QPPCorrelationAnalyzer:
                 corr, _ = stats.kendalltau(self.qpp_df[qpp_method], self.metrics_df[metric])
                 method_name = METHOD_NAME_MAP.get(qpp_method, qpp_method)
                 ax.set_title(f'{method_name}\nτ = {corr:.4f}', fontsize=14, pad=10)
-                ax.set_xlabel('Puntuación QPP')
-                ax.set_ylabel(f'Puntuación {metric_label}')
+                ax.set_xlabel('QPP Score')
+                ax.set_ylabel(f'{metric_label} Score')
                 plt.tight_layout()
                 
                 # Guardar gráfico individual
@@ -488,10 +488,10 @@ class QPPCorrelationAnalyzer:
             plt.plot(x, data, 'o', color='#3498db', alpha=0.6)  # Puntos azules con transparencia
         
         # Customize plot
-        plt.ylabel(f'Correlación {correlation_type.capitalize()}', labelpad=15)
-        plt.xlabel('Método QPP', labelpad=15)
+        plt.ylabel(f'{correlation_type.capitalize()} Correlation', labelpad=15)
+        plt.xlabel('QPP Method', labelpad=15)
         plt.xticks(rotation=45, ha='right', fontsize=12)
-        plt.title("Distribución de Correlaciones por Método QPP", fontsize=18, pad=20)
+        plt.title("Distribution of Correlations by QPP Method", fontsize=18, pad=20)
         plt.grid(True, axis='y')
         
         # Add horizontal line at y=0 for reference
@@ -530,38 +530,38 @@ class QPPCorrelationAnalyzer:
             correlation_types: List of correlation types to include in report
         """
         if not self.output_dir:
-            self.logger.warning("No se especificó directorio de salida. No se puede guardar el informe.")
+            self.logger.warning("No output directory specified. Cannot save the report.")
             return
             
         correlations = self.calculate_correlations(correlation_types)
 
-        with open(os.path.join(self.output_dir, 'informe_correlacion_qpp.txt'), 'w') as f:
-            f.write("Informe de Análisis de Correlación QPP\n")
+        with open(os.path.join(self.output_dir, 'qpp_correlation_report.txt'), 'w') as f:
+            f.write("QPP Correlation Analysis Report\n")
             f.write("=====================================\n\n")
-            f.write("Métricas analizadas: nDCG@k y AP\n\n")
+            f.write("Analyzed Metrics: nDCG@k and AP\n\n")
             
             for corr_type, corr_df in correlations.items():
-                f.write(f"\nCorrelaciones {corr_type.upper()}:\n")
+                f.write(f"\nCorrelations {corr_type.upper()}:\n")
                 f.write("------------------------\n")
                 
-                f.write("\nNúmero de consultas utilizadas:\n")
+                f.write("\nNumber of queries used:\n")
                 for method in corr_df.index:
                     n_queries = len(self.qpp_df[method].dropna())
                     method_name = METHOD_NAME_MAP.get(method, method)
-                    f.write(f"{method_name}: {n_queries} consultas\n")
+                    f.write(f"{method_name}: {n_queries} queries\n")
                 
-                f.write("\nValores de correlación (solo estadísticamente significativos):\n")
+                f.write("\nCorrelation values (only statistically significant):\n")
                 # Map method names for display
                 display_df = corr_df.copy()
                 display_df.index = display_df.index.map(lambda x: METHOD_NAME_MAP.get(x, x))
                 f.write(display_df.to_string())
                 f.write("\n\n")
                 
-                f.write("Estadísticas Resumen:\n")
+                f.write("Summary Statistics:\n")
                 best_method = corr_df.mean(axis=1).idxmax()
                 best_metric = corr_df.mean(axis=0).idxmax()
-                f.write(f"Mejor método QPP: {METHOD_NAME_MAP.get(best_method, best_method)}\n")
-                f.write(f"Métrica más predecible: {METRIC_LABEL_MAP.get(best_metric, best_metric)}\n")
+                f.write(f"Best QPP method: {METHOD_NAME_MAP.get(best_method, best_method)}\n")
+                f.write(f"Most predictable metric: {METRIC_LABEL_MAP.get(best_metric, best_metric)}\n")
                 f.write("\n")
                 
             # Generate plots

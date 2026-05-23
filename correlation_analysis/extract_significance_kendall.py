@@ -15,10 +15,10 @@ DATASETS = [
 ]
 
 METHODS = [
-    "IDF Promedio",
-    "IDF Máximo",
-    "SCQ Promedio",
-    "SCQ Máximo",
+    "IDF Average",
+    "IDF Maximum",
+    "SCQ Average",
+    "SCQ Maximum",
     "WIG",
     "NQC",
     "Clarity",
@@ -47,38 +47,38 @@ def kendall_pvalue(tau: float, n: int) -> float:
 
 
 def parse_kendall_section(text: str):
-    """Parse Kendall section of informe_correlacion_qpp.txt for one dataset.
+    """Parse Kendall section of qpp_correlation_report.txt for one dataset.
 
     Returns:
         n_queries: int
         taus: dict[method] -> (tau_ndcg, tau_ap)
     """
-    m = re.search(r"Correlaciones KENDALL:(.*?)(?:\nCorrelaciones SPEARMAN:|\Z)", text, flags=re.DOTALL)
+    m = re.search(r"Correlations KENDALL:(.*?)(?:\nCorrelations SPEARMAN:|\Z)", text, flags=re.DOTALL)
     if not m:
-        raise RuntimeError("No se encontró sección de Correlaciones KENDALL")
+        raise RuntimeError("Could not find Correlations KENDALL section")
     block = m.group(1)
 
-    # Número de consultas: usamos el de IDF Promedio como representativo
-    m_n = re.search(r"IDF Promedio:\s*(\d+)\s+consultas", block)
+    # Number of queries: we use the one from IDF Average as representative
+    m_n = re.search(r"IDF Average:\s*(\d+)\s+queries", block)
     if not m_n:
-        raise RuntimeError("No se encontró el número de consultas (IDF Promedio)")
+        raise RuntimeError("Could not find the number of queries (IDF Average)")
     n_queries = int(m_n.group(1))
 
-    # Tabla de valores de correlación
+    # Correlation values table
     m_tab = re.search(
-        r"Valores de correlaci[óo]n .*?\n(.*?)(?:\n\n|Estadísticas Resumen:)",
+        r"Correlation values .*?\n(.*?)(?:\n\n|Summary Statistics:)",
         block,
         flags=re.DOTALL,
     )
     if not m_tab:
-        raise RuntimeError("No se encontró la tabla de valores de Kendall")
+        raise RuntimeError("Could not find Kendall values table")
     table = m_tab.group(1)
 
     lines = [ln.strip() for ln in table.splitlines() if ln.strip()]
     if not lines:
-        raise RuntimeError("Tabla de Kendall vacía")
+        raise RuntimeError("Kendall table is empty")
 
-    # Primera línea es cabecera: 'ndcg@10 ap'
+    # First line is header: 'ndcg@10 ap'
     taus = {}
     for line in lines[1:]:
         m_row = re.match(
@@ -101,7 +101,7 @@ def main():
     results = {}
 
     for ds in DATASETS:
-        path = BASE / ds / "informe_correlacion_qpp.txt"
+        path = BASE / ds / "qpp_correlation_report.txt"
         text = path.read_text(encoding="utf-8")
         n, taus = parse_kendall_section(text)
         res_ds = {}
@@ -118,7 +118,7 @@ def main():
             }
         results[ds] = res_ds
 
-    # Promedios por método a través de datasets
+    # Averages per method across datasets
     avg = {}
     for method in METHODS:
         p_ndcg_vals = [results[ds][method]["p_ndcg"] for ds in DATASETS]
@@ -128,13 +128,13 @@ def main():
             "p_ap_mean": sum(p_ap_vals) / len(p_ap_vals),
         }
 
-    print("# Resumen de p-valores de Kendall (ndcg@10 y ap) por dataset y método\n")
+    print("# Summary of Kendall p-values (ndcg@10 and ap) by dataset and method\n")
     print(json.dumps(results, indent=2, ensure_ascii=False))
 
-    print("\n# Promedio de p-valores por método (para tabla de significancia)\n")
+    print("\n# Average of p-values per method (for significance table)\n")
     print(json.dumps(avg, indent=2, ensure_ascii=False))
 
-    print("\n# Filas Typst sugeridas para la tabla de significancia (media de p)\n")
+    print("\n# Suggested Typst rows for the significance table (mean of p)\n")
     for method in METHODS:
         p_ndcg = avg[method]["p_ndcg_mean"]
         p_ap = avg[method]["p_ap_mean"]
