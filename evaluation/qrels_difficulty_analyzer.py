@@ -98,7 +98,7 @@ class QrelsDifficultyAnalyzer:
         plt.close()
 
     # ------------------------------------------------------------------
-    # Análisis de qrels
+    # Qrels analysis
     # ------------------------------------------------------------------
     def plot_relevance_level_distribution(self):
         """
@@ -133,7 +133,7 @@ class QrelsDifficultyAnalyzer:
 
 
     # ------------------------------------------------------------------
-    # Análisis de dificultad de consultas
+    # Query difficulty analysis
     # ------------------------------------------------------------------
     def plot_difficulty_classes(
         self,

@@ -78,11 +78,11 @@ class RetrievalMetricsVisualizer:
         Replaces invalid characters and trailing spaces, and avoids reserved
         names.
         """
-        # Reemplazar caracteres inválidos en Windows: <>:"/\|?*
+        # Replace invalid characters in Windows: <>:"/\|?*
         name = re.sub(r'[<>:"/\\|?*]+', '_', name)
-        # Quitar puntos/espacios finales que Windows no permite
+        # Strip trailing dots/spaces that Windows does not allow
         name = name.rstrip(' .')
-        # Evitar nombres reservados (CON, PRN, AUX, NUL, COM1.., LPT1..)
+        # Avoid reserved names (CON, PRN, AUX, NUL, COM1.., LPT1..)
         reserved = {
             'CON','PRN','AUX','NUL','COM1','COM2','COM3','COM4','COM5','COM6','COM7','COM8','COM9',
             'LPT1','LPT2','LPT3','LPT4','LPT5','LPT6','LPT7','LPT8','LPT9'

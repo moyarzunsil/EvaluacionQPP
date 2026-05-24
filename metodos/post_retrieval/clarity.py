@@ -49,7 +49,7 @@ class Clarity(PostRetrievalMethod):
         # stabilizes the KL divergence.
         self.mu_bg = float(mu_bg)
         vocab_size = len(index_builder.term_df) if getattr(index_builder, 'term_df', None) else 0
-        # Evitar división por cero si el vocabulario no está disponible
+        # Avoid division by zero if vocabulary is not available
         self._uniform_prior = 1.0 / max(1, vocab_size)
         
         # Debug data storage
