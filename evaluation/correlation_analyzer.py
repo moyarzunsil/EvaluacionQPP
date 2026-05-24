@@ -8,7 +8,7 @@ import logging
 import os
 from utils.file_utils import ensure_dir
 
-# Configuración estética global
+# Global aesthetic configuration
 sns.set_style("whitegrid")
 sns.set_context("notebook", font_scale=1.5)
 plt.rcParams.update({
@@ -34,9 +34,9 @@ METHOD_NAME_MAP = {
     'uef_clarity': 'UEF-Clarity'
 }
 
-# Mapeo simple para nombres de métricas en gráficos/leyendas
+# Simple mapping for metric names in plots/legends
 METRIC_LABEL_MAP = {
-    'ap': 'AP',   # Average Precision por consulta
+    'ap': 'AP',   # Average Precision per query
     'map': 'MAP',
 }
 
@@ -147,7 +147,7 @@ class QPPCorrelationAnalyzer:
                             if return_pvalues:
                                 pval_df.loc[qpp_method, metric] = pval
 
-                            # Logging (mantener existente)
+                            # Logging (keep existing)
                         else:
                             corr_df.loc[qpp_method, metric] = float('nan')
                             if return_pvalues:
@@ -177,10 +177,10 @@ class QPPCorrelationAnalyzer:
         pval_df = pval_df.apply(pd.to_numeric, errors='coerce').fillna(1)
         pval_df = pval_df.replace(0.0, np.finfo(float).tiny)  # Avoid log(0)
 
-        # Usar etiquetas amigables para las métricas (AP/MAP)
+        # Use friendly labels for the metrics (AP/MAP)
         pval_df.columns = [METRIC_LABEL_MAP.get(c, c) for c in pval_df.columns]
         
-        # Convert to Spanish method names
+        # Map method names for display
         pval_df.index = pval_df.index.map(lambda x: METHOD_NAME_MAP.get(x, x))
         
         # Create significance categories
@@ -274,9 +274,9 @@ class QPPCorrelationAnalyzer:
         # Convert to numeric, replacing any non-numeric values with NaN
         correlations = correlations.apply(pd.to_numeric, errors='coerce')
         
-        # Map method names to Spanish
+        # Map method names for display
         correlations.index = correlations.index.map(lambda x: METHOD_NAME_MAP.get(x, x))
-        # Map metric names to etiquetas legibles (AP/MAP)
+        # Map metric names to readable labels (AP/MAP)
         correlations.columns = [METRIC_LABEL_MAP.get(c, c) for c in correlations.columns]
         
         plt.figure(figsize=(12, 10))
@@ -318,9 +318,9 @@ class QPPCorrelationAnalyzer:
         # Transpose matrix for horizontal layout
         correlations = correlations.T  
         
-        # Map method names to Spanish
+        # Map method names for display
         correlations.columns = correlations.columns.map(lambda x: METHOD_NAME_MAP.get(x, x))
-        # Map metric names (ahora en índice) a etiquetas legibles
+        # Map metric names (now in index) to readable labels
         correlations.index = [METRIC_LABEL_MAP.get(i, i) for i in correlations.index]
         
         plt.figure(figsize=(15, 8))
@@ -334,7 +334,7 @@ class QPPCorrelationAnalyzer:
             vmax=1,
             fmt='.4f',
             linewidths=0.5,
-            cbar_kws={'label': f'Correlación {correlation_type}', 'shrink': 0.8},
+            cbar_kws={'label': f'{correlation_type.capitalize()} Correlation', 'shrink': 0.8},
             square=False
         )
         
@@ -407,17 +407,17 @@ class QPPCorrelationAnalyzer:
         plt.tight_layout()
         
         if save_plots and self.output_dir:
-            # Guardar gráfico combinado
+            # Save combined plot
             combined_path = os.path.join(self.output_dir, f'dispersion_qpp_{metric}')
             plt.savefig(f'{combined_path}.pdf', dpi=self.dpi)
             plt.savefig(f'{combined_path}.png', dpi=self.dpi)
             plt.close()
             
-            # Crear subcarpeta para gráficos individuales
+            # Create subfolder for individual plots
             scatter_dir = os.path.join(self.output_dir, 'scatter_individual')
             ensure_dir(scatter_dir)
             
-            # Generar gráficos individuales
+            # Generate individual plots
             for qpp_method in self.qpp_df.columns:
                 plt.figure(figsize=(8, 6))
                 ax = plt.gca()
@@ -437,7 +437,7 @@ class QPPCorrelationAnalyzer:
                 ax.set_ylabel(f'{metric_label} Score')
                 plt.tight_layout()
                 
-                # Guardar gráfico individual
+                # Save individual plot
                 filename = f'scatter_{metric}_{qpp_method}'
                 plt.savefig(
                     os.path.join(scatter_dir, f'{filename}.png'), 
@@ -482,10 +482,10 @@ class QPPCorrelationAnalyzer:
         for box in bp['boxes']:
             box.set(facecolor='#2ecc71', linewidth=2, alpha=0.7)
         
-        # Dibujar los puntos individuales
+        # Plot individual points
         for i, data in enumerate(plot_data):
-            x = np.random.normal(i + 1, 0.04, size=len(data))  # Pequeño jitter en el eje X
-            plt.plot(x, data, 'o', color='#3498db', alpha=0.6)  # Puntos azules con transparencia
+            x = np.random.normal(i + 1, 0.04, size=len(data))  # Small jitter on the X axis
+            plt.plot(x, data, 'o', color='#3498db', alpha=0.6)  # Blue points with transparency
         
         # Customize plot
         plt.ylabel(f'{correlation_type.capitalize()} Correlation', labelpad=15)

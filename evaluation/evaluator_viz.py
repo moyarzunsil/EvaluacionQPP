@@ -35,7 +35,7 @@ class RetrievalMetricsVisualizer:
             k = metric.split('@')[1]
             return f'nDCG@{k}'
         elif metric == 'ap':
-            # Español: AP = Average Precision por consulta (según ir_measures / MAP alias).
+            # AP = Average Precision per query (according to ir_measures / MAP alias).
             return 'AP'
         elif metric.startswith('p@'):
             k = metric.split('@')[1]
@@ -49,8 +49,8 @@ class RetrievalMetricsVisualizer:
     def _save_plot(self, filename: str):
         """Helper to save plots consistently.
 
-        Español: Asegura el directorio, sanea el nombre del archivo y reintenta
-        una vez si ocurre un error transitorio al escribir (p. ej., Windows).
+        Ensures the directory exists, sanitizes the filename, and retries
+        once if a transient writing error occurs (e.g., Windows).
         """
         if self.output_dir:
             ensure_dir(self.output_dir)
@@ -73,10 +73,10 @@ class RetrievalMetricsVisualizer:
             plt.show()
 
     def _sanitize_filename(self, name: str) -> str:
-        """Sanea nombres de archivo para Windows/Linux.
+        """Sanitizes filenames for Windows/Linux.
 
-        Español: Reemplaza caracteres inválidos y espacios finales, y evita nombres
-        reservados.
+        Replaces invalid characters and trailing spaces, and avoids reserved
+        names.
         """
         # Reemplazar caracteres inválidos en Windows: <>:"/\|?*
         name = re.sub(r'[<>:"/\\|?*]+', '_', name)
@@ -98,8 +98,8 @@ class RetrievalMetricsVisualizer:
         plt.figure(figsize=(12, 8))
         df_formatted = self.metrics_df.rename(columns=self._format_metric_name)
         sns.boxplot(data=df_formatted, palette='viridis')
-        plt.title('Distribución de las Métricas por Consulta')
-        plt.ylabel('Puntuación')
+        plt.title('Distribution of Metrics per Query')
+        plt.ylabel('Score')
         plt.xticks(rotation=45)
         if save:
             self._save_plot('boxplot_metricas')
@@ -121,8 +121,8 @@ class RetrievalMetricsVisualizer:
             formatted_name = self._format_metric_name(metric)
             sns.histplot(self.metrics_df[metric], kde=True, ax=ax, color='skyblue')
             ax.set_title(formatted_name)
-            ax.set_xlabel('Puntuación')
-            ax.set_ylabel('Frecuencia')
+            ax.set_xlabel('Score')
+            ax.set_ylabel('Frequency')
         
         # Hide empty subplots
         for j in range(i+1, len(axes)):
@@ -136,8 +136,8 @@ class RetrievalMetricsVisualizer:
 
     def plot_mean_metrics(self, save: bool = True):
         """Bar plot showing mean values for each metric."""
-        # Español: Para la media de AP se suele hablar de MAP (Mean Average Precision),
-        # por lo que etiquetamos explícitamente esa barra como MAP.
+        # For the mean of AP, it is common to refer to MAP (Mean Average Precision),
+        # so we explicitly label that bar as MAP.
         means = {}
         for metric, data in self.eval_results.items():
             if metric == 'ap':
@@ -150,8 +150,8 @@ class RetrievalMetricsVisualizer:
         
         plt.figure(figsize=(10, 6))
         sns.barplot(x=metrics, y=values, palette='rocket')
-        plt.title('Media de las Métricas de Evaluación')
-        plt.ylabel('Media')
+        plt.title('Mean of Evaluation Metrics')
+        plt.ylabel('Mean')
         plt.xticks(rotation=45)
         if save:
             self._save_plot('media_metricas')
@@ -172,7 +172,7 @@ class RetrievalMetricsVisualizer:
                 
                 plt.figure(figsize=(8, 6))
                 sns.scatterplot(x=x, y=y, alpha=0.6, color='#3498db')
-                plt.title(f'Relación entre {self._format_metric_name(metric1)} y {self._format_metric_name(metric2)}')
+                plt.title(f'Relationship between {self._format_metric_name(metric1)} and {self._format_metric_name(metric2)}')
                 plt.xlabel(self._format_metric_name(metric1))
                 plt.ylabel(self._format_metric_name(metric2))
                 
